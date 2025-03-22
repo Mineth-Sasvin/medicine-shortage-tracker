@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Stock Charts</title>
+    <script src="https://cdn.plot.ly/plotly-2.20.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2a9df4;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .chart {
+            width: 100%;
+            max-width: 600px;
+            padding: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+
+        button {
+            margin-top: 20px;
+            background-color: #2a9df4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #1f7bc1;
+        }
+    </style>
+    
+</head>
+<body>
+
+<h1>Medicine Stock Charts</h1>
+
+<!-- Bar Chart -->
+<div class="chart-container">
+    <div class="chart">
+        <h2>Stock Levels</h2>
+        <div id="bar-chart"></div>
+    </div>
+
+    <!-- Pie Chart -->
+    <div class="chart">
+        <h2>Stock by Category</h2>
+        <div id="pie-chart"></div>
+    </div>
+</div>
+
+<!-- Back to Home Button -->
+<a href="{{ url_for('index') }}">
+    <button><i class="fas fa-arrow-left"></i> Back to Home</button>
+</a>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const response = await fetch("{{ url_for('stock_chart_data') }}");
+        const data = await response.json();
+    
+        if (data.bar_chart && data.pie_chart) {
+            // ✅ Render Bar Chart
+            Plotly.newPlot('barChart', data.bar_chart.data, data.bar_chart.layout);
+    
+            // ✅ Render Pie Chart
+            Plotly.newPlot('pieChart', data.pie_chart.data, data.pie_chart.layout);
+        } else {
+            document.getElementById('barChart').innerHTML = "<p>No data available for bar chart</p>";
+            document.getElementById('pieChart').innerHTML = "<p>No data available for pie chart</p>";
+        }
+    });
+</script>
+
+</body>
+</html>
